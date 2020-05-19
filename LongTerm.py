@@ -18,6 +18,14 @@ import time
 
 
 class LongTermModel(nn.Module):
+    """ Make an LSTM model over a fine tuned bert model.
+
+    Parameters
+    __________
+    bertFineTuned: BertModel
+        A bert fine tuned instance
+    
+    """
     def __init__(self, bertFineTuned):
         super(LongTermModel, self).__init__()
         self.bertFineTuned=bertFineTuned
@@ -25,7 +33,23 @@ class LongTermModel(nn.Module):
         self.out=nn.Linear(100,10)
     
     def forward(self, ids, mask, token_type_ids, lengt):
+        """ Define how to performed each call
+
+        Parameters
+        __________
+        ids: array
+            -
+        mask: array
+            - 
+        token_type_ids: array
+            -
+        lengt: int
+            -
         
+        Returns:
+        _______
+        -
+        """
         _,pooled_out= self.bertFineTuned(ids, attention_mask=mask, token_type_ids=token_type_ids)
         chunks_emb=pooled_out.split_with_sizes(lengt)
         

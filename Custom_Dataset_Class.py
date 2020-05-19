@@ -19,6 +19,33 @@ import time
 
 
 class ConsumerComplaintsDataset1(Dataset):
+    """ Make preprocecing, tokenization and transform consumer complaints
+    dataset into pytorch DataLoader instance.
+
+    Parameters
+    ----------
+    tokenizer: BertTokenizer
+        transform data into feature that bert understand
+    max_len: int
+        the max number of token in a sequence in bert tokenization. 
+    overlap_len: int
+        the maximum number of overlap token.
+    chunk_len: int
+        define the maximum number of word in a single chunk when spliting sample into a chumk
+    approach: str
+        define how to handle overlap token after bert tokenization.
+    max_size_dataset: int
+        define the maximum number of sample to used from data.
+    file_location: str
+        the path of the dataset.
+
+    Attributes
+    ----------
+    data: array of shape (n_keept_sample,)
+        prepocess data.
+    label: array of shape (n_keept_sample,)
+        data labels
+    """
     
     
     def __init__(self, tokenizer, max_len,chunk_len=200, overlap_len=50, approach="all", max_size_dataset=None,file_location="./us-consumer-finance-complaints/consumer_complaints.csv",min_len=249):
@@ -33,6 +60,20 @@ class ConsumerComplaintsDataset1(Dataset):
         
     
     def process_data(self,file_location):
+        """ Preprocess the text and label columns as describe in the paper.
+
+        Parameters
+        ----------
+        file_location: str
+            the path of the dataset file.
+        
+        Returns
+        -------
+        texts: array of shape (n_keept_sample,)
+            preprocessed  sample
+        labels: array (n_keept_sample,)
+            samples labels transform into a numerical value
+        """
         # Load the dataset into a pandas dataframe.
         print("Nettoyage des données")
         df=pd.read_csv(file_location,dtype="unicode")
@@ -56,6 +97,8 @@ class ConsumerComplaintsDataset1(Dataset):
         return train['text'].values, train['label'].values
     
     def clean_txt(self,text):
+        """ Remove special characters from text """
+
         text = re.sub("'", "",text)
         text=re.sub("(\\W)+"," ",text)    
         return text
@@ -63,6 +106,26 @@ class ConsumerComplaintsDataset1(Dataset):
      
     
     def long_terms_tokenizer(self, data_tokenize, targets):
+        """  tranfrom tokenized data into a long token that take care of
+        overflow token according to the specified approch.
+
+        Parameters
+        ----------
+        data_tokenize: dict
+            an tokenized result of a sample from bert tokenizer encode_plus method.
+        targets: array
+            labels of each samples.
+
+        Returns
+        _______
+        long_token: dict
+            a dictionnary that contains
+             - [ids]  tokens ids
+             - [mask] attention mask of each token
+             - [token_types_ids] the type ids of each token. note that each token in the same sequence has the same type ids
+             - [targets_list] list of all sample label after add overlap token as sample according to the approach used
+             - [len] length of targets_list
+        """
 
         long_terms_token=[]
         input_ids_list=[]
@@ -133,6 +196,8 @@ class ConsumerComplaintsDataset1(Dataset):
 
 
     def __getitem__(self, idx):
+        """  Return a single tokenized sample at a given positon [idx] from data"""
+
         consumer_complaint=str(self.data[idx])
         targets=int(self.label[idx])
         data=self.tokenizer.encode_plus(
@@ -151,6 +216,7 @@ class ConsumerComplaintsDataset1(Dataset):
     
         
     def __len__(self):
+        """ Return data length """
         return self.label.shape[0]
     
     

@@ -18,6 +18,8 @@ import time
 
 
 class BertConsumerComplaints(nn.Module):
+    """ A Model for bert fine tuning """
+
     def __init__(self):
         super(BertConsumerComplaints, self).__init__()
         self.bert_path='bert-base-uncased'
@@ -29,6 +31,22 @@ class BertConsumerComplaints(nn.Module):
         #self.relu=nn.ReLU()
     
     def forward(self, ids, mask, token_type_ids):
+        """ Define how to perfom each call
+
+        Parameters
+        __________
+        ids: array
+            -
+        mask: array
+            - 
+        token_type_ids: array
+            -
+        
+        Returns
+        _______
+            - 
+        """
+
         _,pooled_out= self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids)
         #rh=self.bert_drop(pooled_out)
         #rh=self.fc(rh)

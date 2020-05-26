@@ -1,6 +1,6 @@
 ##############################################################
 #
-# LongTerm.py
+# RoBERT.py
 # This file contains the implementation of the RoBERT model
 # An LSTM is applied to a segmented document. The resulting
 # embedding is used for document-level classification
@@ -26,7 +26,7 @@ from transformers import get_linear_schedule_with_warmup
 import time
 
 
-class LongTermModel(nn.Module):
+class RoBERT_Model(nn.Module):
     """ Make an LSTM model over a fine tuned bert model.
 
     Parameters
@@ -37,7 +37,7 @@ class LongTermModel(nn.Module):
     """
 
     def __init__(self, bertFineTuned):
-        super(LongTermModel, self).__init__()
+        super(RoBERT_Model, self).__init__()
         self.bertFineTuned = bertFineTuned
         self.lstm = nn.LSTM(768, 100, num_layers=1, bidirectional=False)
         self.out = nn.Linear(100, 10)

@@ -1,6 +1,6 @@
 ##############################################################
 #
-# BertFineTuned.py
+# Bert_Classification.py
 # This file contains the code for fine-tuning BERT using a
 # simple classification head.
 #
@@ -25,11 +25,11 @@ from transformers import get_linear_schedule_with_warmup
 import time
 
 
-class BertConsumerComplaints(nn.Module):
+class Bert_Classification_Model(nn.Module):
     """ A Model for bert fine tuning """
 
     def __init__(self):
-        super(BertConsumerComplaints, self).__init__()
+        super(Bert_Classification_Model, self).__init__()
         self.bert_path = 'bert-base-uncased'
         self.bert = transformers.BertModel.from_pretrained(self.bert_path)
         # self.bert_drop=nn.Dropout(0.2)
